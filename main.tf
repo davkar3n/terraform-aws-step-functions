@@ -9,7 +9,7 @@ locals {
   # Normalize ARN by trimming ":*" because data-source has it, but resource does not have it
   log_group_arn = trimsuffix(try(data.aws_cloudwatch_log_group.sfn[0].arn, aws_cloudwatch_log_group.sfn[0].arn, ""), ":*")
 
-  role_name = local.create_role ? coalesce(var.role_name, var.name) : null
+  role_name = local.create_role ? coalesce(var.role_name, var.name, var.policy_name) : null
 }
 
 resource "aws_sfn_state_machine" "this" {
