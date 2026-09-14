@@ -9,7 +9,7 @@ locals {
   # Normalize ARN by trimming ":*" because data-source has it, but resource does not have it
   log_group_arn = trimsuffix(try(data.aws_cloudwatch_log_group.sfn[0].arn, aws_cloudwatch_log_group.sfn[0].arn, ""), ":*")
 
-  role_name = local.create_role ? coalesce(var.policy_name, var.role_name, var.name) : null
+  role_name = local.create_role ? coalesce(var.role_name, var.name) : null
 }
 
 resource "aws_sfn_state_machine" "this" {
@@ -149,7 +149,7 @@ resource "aws_iam_policy_attachment" "service" {
 resource "aws_iam_policy" "additional_json" {
   count = local.create_role && var.attach_policy_json ? 1 : 0
 
-  name   = local.role_name
+  name   = coalesce(var.policy_name, local.role_name)
   path   = var.policy_path
   policy = var.policy_json
   tags   = var.tags
@@ -170,7 +170,7 @@ resource "aws_iam_policy_attachment" "additional_json" {
 resource "aws_iam_policy" "additional_jsons" {
   count = local.create_role && var.attach_policy_jsons ? var.number_of_policy_jsons : 0
 
-  name   = "${local.role_name}-${count.index}"
+  name   = coalesce(var.policy_name, "${local.role_name}-${count.index}")
   path   = var.policy_path
   policy = var.policy_jsons[count.index]
   tags   = var.tags
