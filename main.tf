@@ -255,7 +255,7 @@ data "aws_iam_policy_document" "additional_inline" {
 resource "aws_iam_policy" "additional_inline" {
   count = local.create_role && var.attach_policy_statements ? 1 : 0
 
-  name   = "${local.role_name}-inline"
+  name   = coalesce(var.policy_name, "${local.role_name}-inline")
   path   = var.policy_path
   policy = data.aws_iam_policy_document.additional_inline[0].json
   tags   = var.tags
@@ -298,7 +298,7 @@ data "aws_iam_policy_document" "logs" {
 resource "aws_iam_policy" "logs" {
   count = local.create_role && local.enable_logging && var.attach_cloudwatch_logs_policy ? 1 : 0
 
-  name   = "${local.role_name}-logs"
+  name   = coalesce(var.policy_name, "${local.role_name}-logs")
   path   = var.policy_path
   policy = data.aws_iam_policy_document.logs[0].json
   tags   = var.tags
