@@ -127,7 +127,7 @@ data "aws_iam_policy_document" "service" {
 resource "aws_iam_policy" "service" {
   for_each = { for k, v in var.service_integrations : k => v if local.create_role && var.attach_policies_for_integrations }
 
-  name   = "${local.role_name}-${each.key}"
+  name   = coalesce(var.policy_name-${each.key}, ${local.role_name}-${each.key}"
   path   = var.policy_path
   policy = data.aws_iam_policy_document.service[each.key].json
   tags   = var.tags
