@@ -270,7 +270,7 @@ variable "policies" {
 }
 
 variable "policy_name" {
-  description = "Name of the IAM policy to attach to the role or use as the primary option for role naming"
+  description = "Name of the IAM policy to attach to the role"
   type        = string
   default     = null
 }
